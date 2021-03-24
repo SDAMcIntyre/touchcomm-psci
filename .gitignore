@@ -38,3 +38,10 @@ rsconnect/
 
 # MacOS system files
 *.DS_Store
+
+# data 
+/data/
+*.RData
+
+# figures
+/figures/

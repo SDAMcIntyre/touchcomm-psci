@@ -333,12 +333,12 @@ femg_plot <- function(df, CIs, role.colour) {
 
 # Figure 2A (left)
 ## Zygomaticus toucher
-femg.zyg.t %>% 
+femg.zyg.t.data %>% 
   filter(!is.na(z.mean.diff)) %>% 
   femg_plot(zyg.t.CIs, colour.toucher) -> zyg.t.plot
 
 ## Zygomaticus receiver
-femg.zyg.r %>% 
+femg.zyg.r.data %>% 
   filter(!is.na(z.mean.diff)) %>% 
   femg_plot(zyg.r.CIs, colour.receiver) -> zyg.r.plot
 
@@ -346,12 +346,12 @@ zyg.t.plot + zyg.r.plot # -2, >1
 
 # Figure 2A (right)
 ## Corrugator toucher
-femg.cor.t %>% 
+femg.cor.t.data %>% 
   filter(!is.na(z.mean.diff)) %>% 
   femg_plot(cor.t.CIs, colour.toucher) -> cor.t.plot 
 
 ## Corrugator receiver
-femg.cor.r %>% 
+femg.cor.r.data %>% 
   filter(!is.na(z.mean.diff)) %>% 
   femg_plot(cor.r.CIs, colour.receiver)  -> cor.r.plot
 
@@ -435,6 +435,13 @@ ml.corr <- ml.corr %>% bind_cols(
 # Figure 2D
 ml.t.by.session %>%
   ggplot() +
+  geom_smooth(aes(toucher.classifier.pc, receiver.pc), 
+              method = 'lm', se = FALSE,
+             size = 1, colour = colour.toucher) +
+  geom_smooth(data = ml.r.by.session,
+             aes(receiver.classifier.pc, receiver.pc), 
+             method = 'lm', se = FALSE,
+             size = 1, colour = colour.receiver) +
   geom_point(aes(toucher.classifier.pc, receiver.pc), 
             shape = 1, size = 2, colour = colour.toucher) +
   geom_point(data = ml.r.by.session,
@@ -463,8 +470,7 @@ correlation_annotation <-  annotate(geom = 'text', x = c(50,50), y = c(98,90),
                                     colour = c(colour.toucher, colour.receiver),
                                     label = c(paste(ml.corr$toucher.p),
                                               paste(ml.corr$receiver.p)) 
-                                    ) 
-  
+                                    )
 
 wrap_plots(A = zyg.t.plot +
              sender_annotation +
@@ -487,7 +493,7 @@ wrap_plots(A = zyg.t.plot +
              F = ml.r.matrix + 
                labs(title = 'D. Receiver Classifier', x = 'Cued word', y = NULL) , 
              G = correlation.plot +
-               correlation_annotation +
+               # correlation_annotation +
                labs(title = 'E. Correlation', 
                     y = 'Receiver hit rate (%)', x = 'Classifier hit rate (%)'), 
              design = layout.fig2.bottom) 

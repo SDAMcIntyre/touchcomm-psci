@@ -5,7 +5,7 @@ library(svglite)
 #### functions ####
 clean_bins <- function(df, prefixes, pfkeep = 0) {
   # sets all data to NA in bins with more than pfkeep proportion of flagged data
-  # set pfkeep to 0 to remove bins with any flagged samples
+  # set pfkeep to 0 to NA whole bins with any flagged samples
   for (muscleName in prefixes) {
     name.flagged <- paste0(muscleName, '.flagged')
     name.rawfixed <- paste0(muscleName, '.fixed')
@@ -39,8 +39,9 @@ time_plot <- function(df, muscle) {
 
 #### main ####
 
-femg.data <- read_csv('data/expt1_femg-02_cleaned-all.csv', 
-                      col_types = 'ddiicddddccccccicddlddddlddddlddddldd')
+load(file = 'data/expt1_femg-02_cleaned-all.RData')
+# femg.data <- read_csv('data/expt1_femg-02_cleaned-all.csv', 
+#                       col_types = 'ddiicddddccccccicddlddddlddddlddddldd')
 prefixes <- c('t.zyg', 't.cor', 'r.zyg', 'r.cor')
 
 # 100 ms windows
@@ -61,6 +62,8 @@ femg.binned <- femg.data %>%
   ungroup() %>% 
   do(clean_bins(., prefixes)) 
 
+femg.binned %>% 
+  write_csv('data/expt1_femg_binned_100ms.csv')
 
 # where to cut off the time plot
 cutoffs <- femg.binned %>% 

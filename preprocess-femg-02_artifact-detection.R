@@ -84,6 +84,9 @@ trial.durations %>% group_by(cued) %>% tally()
 trial.durations %>% tally() 
 
 ##### trim pre-stim data and save ####
-femg.z %>% 
-  filter(stimTime.sec >= -2) %>% 
-write_csv(output.file)
+femg.data <- femg.z %>% 
+  filter(stimTime.sec >= -2) 
+
+save(femg.data, file = 'data/expt1_femg-02_cleaned-all.RData')
+femg.data %>% 
+  write_csv(output.file)

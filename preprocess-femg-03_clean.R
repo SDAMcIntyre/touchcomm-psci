@@ -72,10 +72,6 @@ femg.binned <- femg.z %>%
 # export data for classifier (python)
 
 window.subsets <- list(c(0,4))
-# window.subsets <- list(c(0,1),
-#                        c(1,2),
-#                        c(2,3),
-#                        c(3,4))
 
 # 100 ms windows
 bin.sec <- 0.1
@@ -90,8 +86,6 @@ for (slice in seq_along(window.subsets)) {
     mutate(expt.trialNo = paste(session,trialNo) %>% as.factor %>% as.numeric) %>% 
     filter( (phase == 'baseline') | (time >= subwindow[1] & time < subwindow[2]) )
   
-  # trials <- summarise_flagged_trials(femg.subset, prefixes)
-  
   femg.out[[slice]] <- list()
   
   for (muscleName in prefixes) {
@@ -103,7 +97,6 @@ for (slice in seq_along(window.subsets)) {
     name_norm = paste0(str_remove(muscleName,'\\.'),'_norm')
     
     femg.out[[slice]][[muscleName]] <- femg.subset %>% 
-      # filter( !(expt.trialNo %in% trials[[muscleName]]$allFlaggedTrials) ) %>% 
       select(time,
              trial = trialNo,
              session,
@@ -149,44 +142,5 @@ x %>%
   labs(x = 'Time (seconds)', y = 'Muscle Activity (z)')
 
 x[!complete.cases(x),]
-
-# m <- 'tzyg'
-# new <- read_csv(paste0('data/femg cleaned/fEMG_clean_',m,'_0to1sec_15Mar2021.csv'), 
-#                 col_types = cols(trial = col_integer()))
-# 
-# old <- read_csv(paste0('/Users/sarmc72/OneDrive - Linköpings universitet/sarmc72/SarahWorking/',
-#                        'language of social touch/PsychScience Revision 2/femg preprocessing/',
-#                        'fEMG_clean_',m,'.csv'),
-#                 col_types = cols(trial = col_integer()))
-# 
-# new[!complete.cases(new),]
-# old[!complete.cases(old),]
-# 
-# new.trials <- new %>% group_by(session,trial) %>% summarise(dataset = 'new')
-# old.trials <- old %>% group_by(session,trial) %>% summarise(dataset = 'old')
-# 
-# # number of trials per session in each dataset
-# new.trials %>% 
-#   group_by(session) %>% 
-#   tally() %>% View()
-# 
-# old.trials %>% 
-#   group_by(session) %>% 
-#   tally() %>% View()
-# 
-# compare <- full_join(new.trials,old.trials, by = c('session', 'trial'))
-# compare[!complete.cases(compare),] %>% View()
-# 
-# # in old dataset, not in new
-# compare[!complete.cases(compare),] %>% 
-#   filter(!is.na(dataset.y)) %>% 
-#   group_by(session) %>% 
-#   tally(sort = TRUE) #%>% summarise(sum(n))
-# 
-# # in new dataset, not in old
-# compare[!complete.cases(compare),] %>% 
-#   filter(!is.na(dataset.x)) %>% 
-#   group_by(session) %>% 
-#   tally(sort = TRUE) #%>% summarise(sum(n))
 
 

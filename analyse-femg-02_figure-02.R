@@ -404,7 +404,7 @@ ml.t.by.session <- comm.ml.femg.t %>%
             toucher.classifier.n = sum(!is.na(ml.toucher.correct))) 
 
 (ml.corr.t <- cor.test(~ toucher.classifier.pc + receiver.pc, 
-                       ml.t.by.session, alternative = 'greater'))
+                       ml.t.by.session, alternative = 'two.sided'))
 ml.corr <- tibble(toucher.r = paste('r =',round(ml.corr.t$estimate,3)),
                   toucher.p = paste('p =',round(ml.corr.t$p.value,3)))
 
@@ -424,7 +424,7 @@ ml.r.by.session <- comm.ml.femg.r %>%
             receiver.classifier.n = sum(!is.na(ml.receiver.correct))) 
 
 (ml.corr.r <- cor.test(~ receiver.classifier.pc + receiver.pc, 
-                       ml.r.by.session, alternative = 'greater'))
+                       ml.r.by.session, alternative = 'two.sided'))
 ml.corr <- ml.corr %>% bind_cols(
   tibble(receiver.r = paste('r =',round(ml.corr.r$estimate,3)),
                   receiver.p = paste('p =',round(ml.corr.r$p.value,3)))

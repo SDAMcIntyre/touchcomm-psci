@@ -46,7 +46,7 @@ read_all_comm_data <- function(fpath,fnames,infoDataFiles){
 
 ##### COMBINE DATA #####
 # locate the data files
-behDataDir <- 'data/private/expt1_communication-00_raw/' 
+behDataDir <- 'data/private/expt1_comm-00_raw/' 
 commDataFiles <- dir(path = behDataDir, pattern = 'communication-data')
 infoDataFiles <- dir(path = behDataDir, pattern = 'info')
 
@@ -57,4 +57,4 @@ commData <- read_all_comm_data(behDataDir,commDataFiles,infoDataFiles)
 commData %>% 
   select(toucher, receiver, pair, everything()) %>% 
   arrange(toucher,SessionNo,cued,presentationNumber) %>% 
-  write_csv('data/expt1_communication-01_combined.csv')
+  write_csv('data/expt1_comm-01_combined.csv')

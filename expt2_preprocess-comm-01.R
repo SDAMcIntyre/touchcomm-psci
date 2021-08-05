@@ -55,7 +55,7 @@ remove_exclusions <- function(df,excl) {
 ##### combine/process data #####
 
 # locate the data files
-behDataDir <- 'data/private/expt2_communication-00_raw/'
+behDataDir <- 'data/private/expt2_comm-00_raw/'
 commDataFiles <- dir(path = behDataDir, pattern = 'communication-data')
 infoDataFiles <- dir(path = behDataDir, pattern = 'info')
 
@@ -69,4 +69,4 @@ commData <- remove_exclusions(commData,excludePairs)
 ##### write to file ####
 commData %>%
   arrange(pair,sessionNo,trial) %>% 
-  write_csv('data/processed/expt2_communication-01_combined.csv')
+  write_csv('data/processed/expt2_comm-01_combined.csv')

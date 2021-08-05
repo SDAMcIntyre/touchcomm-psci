@@ -34,9 +34,9 @@ read_all_comm_data <- function(fpath,fnames,infoDataFiles){
 }
 
 #### read in the data ####
-behDataDir <- 'data/private/expt3_communication-00_raw/'
+behDataDir <- 'data/private/expt3_comm-00_raw/'
 commDataFiles <- dir(path = behDataDir, pattern = 'communication-data')
 infoDataFiles <- dir(path = behDataDir, pattern = 'info')
 
 commData <- read_all_comm_data(behDataDir,commDataFiles,infoDataFiles)
-write_csv(commData, 'data/processed/expt3_communication-01_combined.csv')
+write_csv(commData, 'data/processed/expt3_comm-01_combined.csv')

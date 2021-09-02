@@ -56,20 +56,23 @@ comm.e4 <- read_csv('data/processed/expt4_comm-01_combined.csv') %>%
 
 #### calculate performance metrics and save ####
 
-performance.e1 <- comm.e1 %>%
+comm.e1 %>%
   filter(response != 'open') %>% 
-  performance_data(cued, response, exptPID, roles) 
-write_csv(performance.e1, 'data/processed/expt1_comm-02_performance.csv')
+  performance_data(cued, response, exptPID, roles) %>% 
+  write_csv('data/processed/expt1_comm-02_performance_.csv')
 
-performance.e2 <- comm.e2 %>%
-  performance_data(cued, response, exptPID) 
-write_csv(performance.e2, 'data/processed/expt2_comm-02_performance.csv')
+comm.e2 %>%
+  performance_data(cued, response, exptPID) %>% 
+  write_csv('data/processed/expt2_comm-02_performance.csv')
 
-performance.e3 <- comm.e3 %>%
-  performance_data(cued, response, exptPID) 
-write_csv(performance.e3, 'data/processed/expt3_comm-02_performance.csv')
+comm.e3 %>%
+  performance_data(cued, response, exptPID) %>% 
+  write_csv('data/processed/expt3_comm-02_performance.csv')
 
-performance.e4 <- comm.e4 %>%
-  performance_data(cued, response, exptPID) 
-write_csv(performance.e4, 'data/processed/expt4_comm-02_performance.csv')
+comm.e4 %>%
+  performance_data(cued, response, exptPID) %>% 
+  write_csv('data/processed/expt4_comm-02_performance.csv')
 
+full_join(comm.e3,comm.e4) %>%
+  performance_data(cued, response, presentationNumber) %>% 
+  write_csv('data/processed/expts3-4_comm-02_performance-over-time.csv')

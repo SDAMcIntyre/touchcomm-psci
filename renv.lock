@@ -102,10 +102,10 @@
     },
     "afex": {
       "Package": "afex",
-      "Version": "0.26-0",
+      "Version": "1.0-1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "a012c48848154c39e7b465d5634510e8"
+      "Hash": "4f577a0f17121c5b3048131ded23d02a"
     },
     "askpass": {
       "Package": "askpass",

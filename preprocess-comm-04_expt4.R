@@ -57,7 +57,7 @@ read_all_comm_data <- function(fpath,fnames,infoDataFiles){
 
 
 #### reconstruct missing files ####
-behDataDir <- 'data/private/expt4_comm-00_raw/'
+behDataDir <- 'data/private/expt4_comm_raw/'
 missingCommData <- c('touch-comm-Behav_2018-04-06_11-24-35_P009',
                      'touch-comm-Behav_2018-04-06_15-00-56_P010')
 reconstruct_comm_file(behDataDir, missingCommData)

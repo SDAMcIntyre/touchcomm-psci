@@ -64,7 +64,7 @@ read_all_video_files <- function(fpath, fnames) {
 
 #### read all video data ####
 
-video.files.path <- 'data/raw/expt1_video-annotations-00_raw/'
+video.files.path <- 'data/raw/expt1_video-annotations_raw-txt/'
 video.files <- dir(path = video.files.path, pattern = 'txt')
 
 video.data.all <- read_all_video_files(video.files.path, video.files)

@@ -42,7 +42,7 @@ performance_data <- function(.data, item, response, ...) {
 #### read data ####
 comm.e1 <- read_csv('data/processed/expt1_comm-01_combined.csv') %>%
   mutate(exptPID = paste('E1', pair, sep = '.'),
-         roles = if_else(sessionNo == 'Session 1', 'Initial roles', 'Swapped roles'))
+         roles = if_else(SessionNo == 'Session 1', 'Initial roles', 'Swapped roles'))
 
 comm.e2 <- read_csv('data/processed/expt2_comm-01_combined.csv') %>%
   mutate(exptPID = paste('E2',pair, sep = '.'))
@@ -59,7 +59,7 @@ comm.e4 <- read_csv('data/processed/expt4_comm-01_combined.csv') %>%
 comm.e1 %>%
   filter(response != 'open') %>% 
   performance_data(cued, response, exptPID, roles) %>% 
-  write_csv('data/processed/expt1_comm-02_performance_.csv')
+  write_csv('data/processed/expt1_comm-02_performance.csv')
 
 comm.e2 %>%
   performance_data(cued, response, exptPID) %>% 

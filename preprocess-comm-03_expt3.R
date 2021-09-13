@@ -34,7 +34,7 @@ read_all_comm_data <- function(fpath,fnames,infoDataFiles){
 }
 
 #### read in the data ####
-behDataDir <- 'data/private/expt3_comm-00_raw/'
+behDataDir <- 'data/private/expt3_comm_raw/'
 commDataFiles <- dir(path = behDataDir, pattern = 'communication-data')
 infoDataFiles <- dir(path = behDataDir, pattern = 'info')
 

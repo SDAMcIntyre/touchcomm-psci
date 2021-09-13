@@ -55,7 +55,7 @@ remove_exclusions <- function(df,excl) {
 ##### combine/process data #####
 
 # locate the data files
-behDataDir <- 'data/private/expt2_comm-00_raw/'
+behDataDir <- 'data/private/expt2_comm_raw/'
 commDataFiles <- dir(path = behDataDir, pattern = 'communication-data')
 infoDataFiles <- dir(path = behDataDir, pattern = 'info')
 

@@ -1,5 +1,10 @@
-library(tidyverse)
+library(dplyr)
+library(purrr)
+library(readr)
+library(stringr)
+library(tidyr)
 library(RcppRoll)
+library(ggplot2)
 
 #### functions ####
 detect_artifacts <- function(df, prefixes, win.sec, flag.threshold) {
@@ -36,9 +41,9 @@ detect_artifacts <- function(df, prefixes, win.sec, flag.threshold) {
 
 #### main ####
 
-output.file <- 'data/expt1_femg-02_cleaned-all.csv'
+output.file.name <- 'data/processed/expt1_femg-02_artifacts-labelled'
 
-femg.files <- list.files('data/expt1_femg-01_aligned', full.names = TRUE) 
+femg.files <- list.files('data/processed/expt1_femg-01_aligned', full.names = TRUE) 
 
 prefixes <- c('t.zyg', 't.cor', 'r.zyg', 'r.cor')
 
@@ -87,6 +92,7 @@ trial.durations %>% tally()
 femg.data <- femg.z %>% 
   filter(stimTime.sec >= -2) 
 
-save(femg.data, file = 'data/expt1_femg-02_cleaned-all.RData')
-femg.data %>% 
-  write_csv(output.file)
+# save as RData format to save on memory issues when loading the data in analysis step
+save(femg.data, file = paste0(output.file.name, '.RData') )
+
+write_csv(femg.data, paste0(output.file.name, '.csv'))

@@ -1,4 +1,6 @@
-library(tidyverse)
+library(dplyr)
+library(readr)
+library(ggplot2)
 library(patchwork)
 library(svglite)
 
@@ -42,9 +44,10 @@ time_plot <- function(df, muscle) {
 
 #### main ####
 
-load(file = 'data/expt1_femg-02_cleaned-all.RData')
-# femg.data <- read_csv('data/expt1_femg-02_cleaned-all.csv', 
-#                       col_types = 'ddiicddddccccccicddlddddlddddlddddldd')
+## use .RData file in case of memory problems
+load(file = 'data/processed/expt1_femg-02_artifacts-labelled.RData')
+femg.data <- read_csv('data/processed/expt1_femg-02_artifacts-labelled.csv',
+                      col_types = 'ddiicddddccccccicddlddddlddddlddddldd')
 prefixes <- c('t.zyg', 't.cor', 'r.zyg', 'r.cor')
 
 # 100 ms windows
@@ -57,7 +60,7 @@ femg.binned <- femg.data %>%
                 labels = FALSE),
     time = (bin.n-1) * bin.sec + min(stimTime.sec) 
   ) %>% 
-  group_by(session,cued,trialNo,time) %>% 
+  group_by(session,cued,trialNo,phase,time) %>%
   summarise(
     across(.cols = starts_with(prefixes), 
            .fns = ~mean(., na.rm = TRUE))
@@ -66,7 +69,7 @@ femg.binned <- femg.data %>%
   do(clean_bins(., prefixes)) 
 
 femg.binned %>% 
-  write_csv('data/expt1_femg_binned_100ms.csv')
+  write_csv('data/processed/expt1_femg-03_binned-100ms-clean.csv')
 
 # where to cut off the time plot
 cutoffs <- femg.binned %>% 
@@ -120,6 +123,7 @@ guide_area() +
   plot_layout(design = design, guides = 'collect') & 
   theme(legend.position = 'top') & 
   guides(colour = guide_legend(nrow = 1))
-ggsave(paste0('figures/femg_binned-',round(bin.sec*1000),'ms-windows.png'))
-ggsave(paste0('figures/femg_binned-',round(bin.sec*1000),'ms-windows.svg'))
+ggsave(paste0('figures/FigS2_femg_binned-',round(bin.sec*1000),'ms-windows.png'))
+ggsave(paste0('figures/FigS2_femg_binned-',round(bin.sec*1000),'ms-windows.svg'))
+ggsave(paste0('figures/FigS2_femg_binned-',round(bin.sec*1000),'ms-windows.pdf'))
 

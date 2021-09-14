@@ -66,7 +66,8 @@ confusion_matrix_data <- function(.data, ...) {
     ungroup()
 }
 
-round_integer <- function(x) trunc(x+sign(x)*0.5)
+round_integer <- function(x) 
+  { trunc(x+sign(x)*0.5) }
 
 confusion_matrix_plot <- function(df, grad.colour, grad.limit = c(0,100), ylabels, abr = 3) {
   df %>% 

@@ -1,4 +1,6 @@
-library(tidyverse)
+library(dplyr)
+library(readr)
+library(stringr)
 
 #### functions ####
 summarise_flagged_trials <- function(df, prefixes) {
@@ -36,45 +38,28 @@ summarise_flagged_trials <- function(df, prefixes) {
 
 #### main ####
 
-output.folder <- 'data/expt1_femg-03_cleaned-time-selected'
+output.folder <- 'data/processed/expt1_femg-04_cleaned-time-selected'
 if (!dir.exists(output.folder)) dir.create(output.folder)
 
-femg.z <- read_csv('data/expt1_femg-02_cleaned-all.csv', col_types = 'ddiicddddccccccicicddlddddlddddlddddldd')
-
-
-##### clean and export #####
 
 # trim to just baseline and stimulus
 baseline.duration.sec <- 0.2
 baseline.offset.sec <- 1.0
 
-femg.binned <- femg.z %>% 
-  mutate(phase = replace(phase, # values to replace
-                         stimTime.sec >= -(baseline.duration.sec + baseline.offset.sec) & 
-                           stimTime.sec < -baseline.offset.sec, # conditions
-                         'baseline')) %>% 
-  mutate(
-    bin.n = cut(stimTime.sec, 
-                breaks = seq(min(stimTime.sec), max(stimTime.sec), by = bin.sec), 
-                labels = FALSE),
-    time = (bin.n-1) * bin.sec + min(stimTime.sec) 
-  ) %>% 
-  group_by(session,cued,trialNo,phase,time) %>% 
-  summarise(
-    across(.cols = starts_with(prefixes), 
-           .fns = ~mean(., na.rm = TRUE))
-  ) %>% 
-  ungroup() %>% 
-  do(clean_bins(., prefixes)) %>% 
-  filter(phase == 'stimulus' | phase == 'baseline')
+femg.binned <- read_csv('data/processed/expt1_femg-03_binned-100ms-clean.csv') %>% 
+    mutate(phase = replace(phase, # values to replace
+                           time >= -(baseline.duration.sec + baseline.offset.sec) &
+                             time < -baseline.offset.sec, # conditions
+                           'baseline')) %>% 
+   filter(phase == 'stimulus' | phase == 'baseline')
 
-# reject trials with artifacts and
-# export data for classifier (python)
+
+#### export data for classifier (python) ####
+
+# #femg channels
+prefixes <- c('t.zyg', 't.cor', 'r.zyg', 'r.cor')
 
 window.subsets <- list(c(0,4))
-
-# 100 ms windows
-bin.sec <- 0.1
 
 femg.out <- list()
 
@@ -122,25 +107,7 @@ for (slice in seq_along(window.subsets)) {
               paste0(output.folder,'/fEMG_clean_', 
                      str_remove(muscleName,'\\.'),
                      '_',subwindow[1],
-                     'to',subwindow[2],'sec_100ms-binned_25Mar2021.csv')
+                     'to',subwindow[2],'sec_100ms-binned.csv')
     )
   }
 }
-
-#### checks #### 
-
-m <- 'rzyg'
-x <- read_csv(paste0(output.folder,'/fEMG_clean_',m,'_0to4sec_100ms-binned_25Mar2021.csv'), 
-              col_types = cols(trial = col_integer()))
-x %>%
-  ggplot(aes(x = time, y = .[[paste0(m,'_norm')]],
-             colour = cue, fill = cue, linetype = cue, shape = cue)) +
-  geom_vline(xintercept = 0) +
-  stat_summary(fun = 'mean', geom = 'line') +
-  stat_summary(fun = 'mean', geom = 'point') +
-  theme_bw() +
-  labs(x = 'Time (seconds)', y = 'Muscle Activity (z)')
-
-x[!complete.cases(x),]
-
-

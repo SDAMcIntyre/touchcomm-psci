@@ -3,15 +3,15 @@ library(RcppRoll)
 library(plotly)
 
 # output folder
-output.folder <- 'data/expt1_femg-01_aligned'
+output.folder <- 'data/processed/expt1_femg-01_aligned'
 if (!dir.exists(output.folder)) dir.create(output.folder)
 
 #femg raw
-femg.raw.files <- list.files('data/expt1_femg-00_raw-txt', pattern = '[0-9]+', full.names = TRUE) 
-channels <- read.csv('data/expt1_femg-00_raw-txt/channel-labels.csv')
-roles <- read.csv('data/expt1_femg-00_raw-txt/role-labels.csv')
-video.files <- list.files('data/expt1_video-timing-sync-for-femg', full.names = TRUE)
-commForfemg <- read_csv('data/expt1_communication_data.csv', col_types = 'cccicccici') %>%
+femg.raw.files <- list.files('data/raw/expt1_femg_raw-txt', pattern = '[0-9]+', full.names = TRUE) 
+channels <- read.csv('data/raw/expt1_femg_raw-txt/channel-labels.csv')
+roles <- read.csv('data/raw/expt1_femg_raw-txt/role-labels.csv')
+video.files <- list.files('data/processed/expt1_femg_video-timing-sync', full.names = TRUE)
+commForfemg <- read_csv('data/processed/expt1_comm-01_combined.csv', col_types = 'cccicccici') %>%
   mutate(
     session = paste(
     str_replace(toucher,'P','T'),
@@ -105,7 +105,12 @@ denoise <- function(x, nsamples = 'auto', ignoreValues = c(0)) {
   
 }
 
-clean_acq_stim_codes <- function(femgData, stimChannel, usedStimCodes, knownNoiseCodes = c(), offCode = 0, nsamples = 'auto') {
+clean_acq_stim_codes <- function(femgData, 
+                                 stimChannel, 
+                                 usedStimCodes, 
+                                 knownNoiseCodes = c(), 
+                                 offCode = 0, 
+                                 nsamples = 'auto') {
   
   denoised <- denoise(femgData[[stimChannel]], nsamples = nsamples, 
                       ignoreValues = c(offCode, knownNoiseCodes))

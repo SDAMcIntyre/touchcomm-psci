@@ -1,12 +1,12 @@
-library(tidyverse)
-# library(broom)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(ggplot2)
 library(afex)
 library(emmeans)
 library(patchwork)
-# library(svglite)
-# #library(pwr)
-# library(RcppRoll)
-# source('analysis source.R')
+library(svglite)
+source('analyse-comm_source.R')
 
 #### functions ####
 z_mean_diff <- function(.data) {
@@ -14,11 +14,9 @@ z_mean_diff <- function(.data) {
     group_by(session,cue,trial) %>% 
     tally() %>% ungroup() %>% pull(n) %>% max()
   .data %>% 
-  # femg.zyg.t.samples %>% 
     group_by(session,cue,trial,phase) %>% 
     summarise(across(.cols = ends_with('norm'), .fns = mean),
               n = n()) %>% 
-    # summarise_at(vars(ends_with('norm')), mean) %>% 
     rename(z.mean = ends_with('norm')) %>%
     ungroup() %>%
     complete(phase, nesting(session,cue,trial)) %>%
@@ -72,106 +70,30 @@ read_ml_lines <- function(blockN, ...) {
     as.numeric() -1
 }
 
-tally_by <- function(.data, ...) {
-  byVars <- enquos(..., .named = TRUE)
-  xformula <- reformulate(termlabels = c(names(byVars)))
-  .data %>%
-    xtabs(formula = xformula) %>%
-    as_tibble() %>%
-    arrange(...)
-}
-
-confusion_matrix_data <- function(.data, ...) {
-  if (!all(c("cued", "response") %in% names(.data))) {
-    stop("`data` must contain `cued` and `response` columns")
-  }
-  .data %>% 
-    tally_by(..., cued, response) %>%
-    rename('respFreq' = 'n') %>%
-    group_by(...,cued) %>%
-    mutate(cuedFreq = sum(respFreq),
-           Percent = 100*respFreq/cuedFreq) %>%
-    ungroup()
-}
-
-order_PIDs <- function(.data, PID) {
-  .data %>%
-    confusion_matrix_data({{PID}}) %>% 
-    filter(cued == response) %>% 
-    group_by({{PID}}) %>% 
-    summarise(performance = mean(Percent)) %>% 
-    arrange(-performance) %>% 
-    pull({{PID}})
-}
-
-round_integer <- function(x) trunc(x+sign(x)*0.5)
-
-confusion_matrix_plot <- function(df, grad.colour, grad.limit = c(0,100), ylabels, abr = 3) {
-  df %>%
-    mutate(cued = factor(cued, levels = orderedCues),
-           response = factor(response, levels = rev(ylabels))) %>%
-    ggplot(aes(x=cued, y=response, fill=Percent)) +
-    geom_tile(color="black",size=0.1) +
-    geom_text(aes(label=round_integer(respFreq)), size=3, colour="black") +
-    scale_fill_gradient(name =' %', na.value = 'white', low='white', high=grad.colour,
-                        guide = 'legend', limits = grad.limit) +
-    scale_x_discrete(label = str_trunc(str_to_title(orderedCues),abr,'right','')) +
-    scale_y_discrete(label = str_trunc(str_to_title(rev(ylabels)),abr,'right','')) +
-    theme_classic() + theme_x45deg + theme_confmat_legend +
-    theme_nofacetbox + theme(axis.line = element_blank()) +
-    labs(x = 'Cued word', y = 'Receiver response')
-}
 
 ####
 
-#### plot theme customisations ####
-theme_set(theme_light()) 
+#### read in cleaned & binned fEMG data #### 
 
-theme_x45deg <- theme(axis.text.x=element_text(angle=45, hjust = 1))
-
-theme_nofacetbox <- theme(strip.background = element_blank(), 
-                          strip.text = element_text(colour = 'black'))
-
-theme_biggerfonts <- theme(
-  axis.title.x=element_text(size=14), 
-  axis.title.y=element_text(size=14,angle=90, margin = margin(t = 0, r = 5, b = 0, l = 15)), 
-  axis.text.x=element_text(size=12), 
-  axis.text.y=element_text(size=12), 
-  strip.text.x=element_text(size=14), 
-  legend.text=element_text(size=12), 
-  legend.title=element_text(size=14))
-
-colour.intuitive <-  '#377EB8' #blue
-# colour.expert <- '#4DAF4A' # green
-colour.receiver <- "#E69F00" #yellow
-colour.toucher <- '#984ea3' #purple 
-# colour.swapped <- '#ff00b3' #pink
-
-theme_confmat_legend <- theme(legend.margin=margin(0,0,0,0),
-                              legend.box.margin=margin(t = 0, r = 0, b = 0,l = -10), 
-                              legend.text=element_text(size=8))
-####
-
-#### main ####
-
-# read in facial EMG data, after arteface rejection 
+file.prefix <- 'data/processed/expt1_femg-04_cleaned-time-selected/fEMG_clean_'
+file.suffix <- '_0to4sec_100ms-binned.csv'
 
 femg.zyg.t.samples <- read_csv(
-  'data/expt1_femg-03_cleaned-time-selected/fEMG_clean_tzyg_0to4sec_100ms-binned_25Mar2021.csv',
+  paste0(file.prefix, 'tzyg', file.suffix),
   col_types = cols(trial = col_integer()) )
 femg.zyg.r.samples <- read_csv(
-  'data/expt1_femg-03_cleaned-time-selected/fEMG_clean_rzyg_0to4sec_100ms-binned_25Mar2021.csv', 
+  paste0(file.prefix, 'rzyg', file.suffix), 
   col_types = cols(trial = col_integer()) )
 femg.cor.t.samples <- read_csv(
-  'data/expt1_femg-03_cleaned-time-selected/fEMG_clean_tcor_0to4sec_100ms-binned_25Mar2021.csv',
+  paste0(file.prefix, 'tcor', file.suffix),
   col_types = cols(trial = col_integer()) )
 femg.cor.r.samples <- read_csv(
-  'data/expt1_femg-03_cleaned-time-selected/fEMG_clean_rcor_0to4sec_100ms-binned_25Mar2021.csv', 
+  paste0(file.prefix, 'rcor', file.suffix), 
   col_types = cols(trial = col_integer()) )
 
-orderedCues <- c('attention', 'love', 'happiness', 'calming', 'sadness', 'gratitude')
+# orderedCues <- c('attention', 'love', 'happiness', 'calming', 'sadness', 'gratitude')
 
-##### mean z and mean z difference (stim - baseline) #####
+#### mean z and mean z difference (stim - baseline) ####
 
 femg.zyg.t <-  femg.zyg.t.samples %>% 
   z_mean_diff() %>% # z.mean.diff = stimulus mean z - baseline mean z
@@ -189,8 +111,8 @@ femg.cor.r <- femg.cor.r.samples %>%
   z_mean_diff() %>% # z.mean.diff = stimulus mean z - baseline mean z
   mutate(cued = factor(cued, levels = orderedCues)) #%>% 
 
-##### communication data ####
-comm.femg <- read_csv('data/expt1_communication_data.csv', col_types = 'cccicccici') %>% 
+#### read communication data ####
+comm.femg <- read_csv('data/processed/expt1_comm-01_combined.csv', col_types = 'cccicccici') %>% 
   mutate(
     session = paste(
       str_replace(toucher,'P','T'),
@@ -198,53 +120,40 @@ comm.femg <- read_csv('data/expt1_communication_data.csv', col_types = 'ccciccci
   ) %>% 
   select(c('session', 'trial','cued', 'response', 'correct'))
 
-##### read in ml confusion matrix data ####
-ml.t.confusion <- read_ml_matrix('data/ML_predictions_output.txt', 1)
-ml.r.confusion <- read_ml_matrix('data/ML_predictions_output.txt', 9)
+#### read in ml confusion matrix data ####
+ml.predictions.file <- 'data/processed/expt1_femg-04_ML-predictions-output.txt'
+
+ml.t.confusion <- read_ml_matrix(ml.predictions.file, 1)
+ml.r.confusion <- read_ml_matrix(ml.predictions.file, 9)
 
 # read in ml performance on specific trials
-ml.rows <- read_ml_rows_file('data/ML_predictions_output.txt', comm.rows = 1:nrow(comm.femg))
+ml.rows <- read_ml_rows_file(ml.predictions.file, comm.rows = 1:nrow(comm.femg))
 # ml.rows[!complete.cases(ml.rows),]
 sum(ml.rows$rowN != seq_along(ml.rows$rowN)) # check there are no duplicate row numbers
 
 #### combine comm data with ml output ####
 comm.ml.femg <- bind_cols(comm.femg, ml.rows  ) # %>% select(-rowN)
 
-##### toucher compare numbers #####
+##### toucher femg combined #####
 joinby <- c('session', 'trial', 'cued') # one 'session' = one participant in one role (and partner in the other)
 comm.ml.femg.t <- inner_join(femg.zyg.t, femg.cor.t, 
                              suffix = c('.z','.c'),
                              by = joinby) %>% 
   full_join(comm.ml.femg) 
 
-# any ml data where there shouldn't be?
-comm.ml.femg.t %>% 
-  filter( ( is.na(z.mean.diff.z) | is.na(z.mean.diff.c) ) & !is.na(ml.toucher.correct))
 
-# any missing ml data where there should be?
-comm.ml.femg.t %>% 
-  filter( !is.na(z.mean.diff.z) & !is.na(z.mean.diff.c)  & is.na(ml.toucher.correct))
-
-##### receiver compare numbers #####
+#### receiver femg combined #####
 
 comm.ml.femg.r <- inner_join(femg.zyg.r, femg.cor.r, 
                              suffix = c('.z','.c'),
                              by = joinby) %>% 
   full_join(comm.ml.femg) 
 
-# any ml data where there shouldn't be?
-comm.ml.femg.r %>% 
-  filter( ( is.na(z.mean.diff.z) | is.na(z.mean.diff.c) ) & !is.na(ml.receiver.correct))
 
-# any missing ml data where there should be?
-comm.ml.femg.r %>% 
-  filter( !is.na(z.mean.diff.z) & !is.na(z.mean.diff.c)  & is.na(ml.receiver.correct))
-
-
-#### mixed effects models - in caption of Figure 2A ####
+#### mixed effects models ####
 set_sum_contrasts()
 
-# ZYG
+###. ZYG toucher ####
 
 femg.zyg.t.data <- femg.zyg.t %>% 
   filter(!is.na(z.mean.diff)) %>% # 955
@@ -260,7 +169,8 @@ anova(glmZyg.toucher)
 emmeans(glmZyg.toucher, ~ 1, infer = TRUE) # intercept = overall activity compared to baseline
 (zyg.t.CIs <- emmeans(glmZyg.toucher, ~ cued) %>% as_tibble() %>% mutate(role = 'Toucher'))
 
-# receiver 
+###. ZYG receiver ####
+
 femg.zyg.r.data <- femg.zyg.r %>% 
   filter(!is.na(z.mean.diff)) %>% # 962
   filter(n.bins >= 10) # 954
@@ -275,7 +185,7 @@ anova(glmZyg.receiver)
 emmeans(glmZyg.receiver, ~ 1, infer = TRUE)
 (zyg.r.CIs <- emmeans(glmZyg.receiver, ~ cued) %>% as_tibble() %>% mutate(role = 'Receiver'))
 
-# COR
+###. COR toucher ####
 
 femg.cor.t.data <- femg.cor.t %>% 
   filter(!is.na(z.mean.diff)) %>% # 937
@@ -291,7 +201,8 @@ anova(glmCor.toucher)
 emmeans(glmCor.toucher, ~ 1, infer = TRUE)
 (cor.t.CIs <- emmeans(glmCor.toucher, ~ cued) %>% as_tibble() %>% mutate(role = 'Toucher'))
 
-# receiver 
+###. COR receiver ####
+
 femg.cor.r.data <- femg.cor.r %>% 
   filter(!is.na(z.mean.diff)) %>% # 940
   filter(n.bins >= 10) # 935
@@ -308,7 +219,9 @@ emmeans(glmCor.receiver, ~ 1, infer = TRUE)
 
 #### FIGURE 2 - Facial EMG summary plots ####
 
-##### femg overall #####
+theme_set(theme_light()) 
+
+####. femg activity #####
 
 femg_plot <- function(df, CIs, role.colour) {
   df %>% 
@@ -331,7 +244,7 @@ femg_plot <- function(df, CIs, role.colour) {
 
 }
 
-# Figure 2A (left)
+##.. Figure 2A (left) ####
 ## Zygomaticus toucher
 femg.zyg.t.data %>% 
   filter(!is.na(z.mean.diff)) %>% 
@@ -344,7 +257,7 @@ femg.zyg.r.data %>%
 
 zyg.t.plot + zyg.r.plot # -2, >1
 
-# Figure 2A (right)
+##.. Figure 2A (right) ####
 ## Corrugator toucher
 femg.cor.t.data %>% 
   filter(!is.na(z.mean.diff)) %>% 
@@ -357,9 +270,9 @@ femg.cor.r.data %>%
 
 cor.t.plot + cor.r.plot # -2, > 1
 
-##### classifier confusion matrix #####
+###. classifier confusion matrix ####
 
-# Figure 2B
+##.. Figure 2B ####
 ml.t.confusion %>%
   full_join(comm.ml.femg.t %>% 
               filter(!is.na(ml.toucher.correct)) %>%
@@ -371,7 +284,7 @@ ml.t.confusion %>%
                         grad.limit = c(10,50), ylabels = orderedCues) -> ml.t.matrix
 
 
-# Figure 2C
+##.. Figure 2C ####
 
 ml.r.confusion %>%
   full_join(comm.ml.femg.r %>% 
@@ -386,12 +299,12 @@ ml.r.confusion %>%
 
 ml.t.matrix + ml.r.matrix
 
-##### correlation #####
+###. correlation ####
 
 # check n
 comm.ml.femg.t %>% 
   group_by(session) %>% 
-  summarise(n = sum(!is.na(ml.toucher.correct))) %>%  #ggplot(aes(x = n)) + geom_histogram(binwidth = 5, closed = 'left') + scale_y_continuous(breaks = 0:12)
+  summarise(n = sum(!is.na(ml.toucher.correct))) %>%  
   filter(n >= 10) %>% # keep receivers with at least 10 trials of ml data
   pull(session) -> keepSessions.t
 
@@ -411,7 +324,7 @@ ml.corr <- tibble(toucher.r = paste('r =',round(ml.corr.t$estimate,3)),
 
 comm.ml.femg.r %>% 
   group_by(session) %>% 
-  summarise(n = sum(!is.na(ml.receiver.correct))) %>%  #ggplot(aes(x = n)) + geom_histogram(binwidth = 5, closed = 'left') + scale_y_continuous(breaks = 0:12)
+  summarise(n = sum(!is.na(ml.receiver.correct))) %>%  
   filter(n >= 10) %>% # keep receivers with at least 10 trials of ml data
   pull(session) -> keepSessions.r
 
@@ -432,7 +345,7 @@ ml.corr <- ml.corr %>% bind_cols(
 
 
 
-# Figure 2D
+##.. Figure 2D ####
 ml.t.by.session %>%
   ggplot() +
   geom_smooth(aes(toucher.classifier.pc, receiver.pc), 
@@ -451,7 +364,7 @@ ml.t.by.session %>%
   theme_classic() -> correlation.plot
 correlation.plot
 
-#### whole Figure 2 ####
+###. whole Figure 2 ####
 
 # windows(8.5, 5.7)
 quartz(width = 8.5, height = 5.7); plot(1:10)
@@ -500,3 +413,4 @@ wrap_plots(A = zyg.t.plot +
 
 
 ggsave('figures/Figure 2 femg combined.svg')
+ggsave('figures/Figure 2 femg combined.pdf')

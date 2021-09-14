@@ -46,8 +46,8 @@ time_plot <- function(df, muscle) {
 
 ## use .RData file in case of memory problems
 load(file = 'data/processed/expt1_femg-02_artifacts-labelled.RData')
-femg.data <- read_csv('data/processed/expt1_femg-02_artifacts-labelled.csv',
-                      col_types = 'ddiicddddccccccicddlddddlddddlddddldd')
+# femg.data <- read_csv('data/processed/expt1_femg-02_artifacts-labelled.csv',
+#                       col_types = 'ddiicddddccccccicddlddddlddddlddddldd')
 prefixes <- c('t.zyg', 't.cor', 'r.zyg', 'r.cor')
 
 # 100 ms windows

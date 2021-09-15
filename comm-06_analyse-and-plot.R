@@ -8,12 +8,12 @@ library(psych)
 library(patchwork)
 library(parallel)
 
-source('analyse-comm_source.R')
+source('comm_source.R')
 
 #### read full data ####
 comm.e1 <- read_csv('data/processed/expt1_comm-01_combined.csv') %>%
   mutate(exptPID = paste('E1', pair, sep = '.'),
-         roles = if_else(sessionNo == 'Session 1', 'Initial roles', 'Swapped roles'))
+         roles = if_else(SessionNo == 'Session 1', 'Initial roles', 'Swapped roles'))
 
 comm.e2 <- read_csv('data/processed/expt2_comm-01_combined.csv') %>%
   mutate(exptPID = paste('E2',pair, sep = '.'))
@@ -291,17 +291,17 @@ performance.over.time %>%
 
 ###. figure 1b ####
 comm.e1 %>%
-  filter(response != 'open' & sessionNo == 'Session 1') %>% 
+  filter(response != 'open' & SessionNo == 'Session 1') %>% 
   confusion_matrix_data() %>%
   confusion_matrix_plot(colour.intuitive, ylabels = c(orderedCues,'other')) + 
   labs(title = 'E1: Initial roles') -> confmat.e1.role1
 
 ###. figure S1a ####
 orderedPIDs1.1 <- comm.e1 %>% 
-  filter(response != 'open' & sessionNo == 'Session 1') %>% 
+  filter(response != 'open' & SessionNo == 'Session 1') %>% 
   order_PIDs(exptPID)
 comm.e1 %>%
-  filter(response != 'open' & sessionNo == 'Session 1') %>% 
+  filter(response != 'open' & SessionNo == 'Session 1') %>% 
   confusion_matrix_data(exptPID)  %>%
   mutate(exptPID = factor(exptPID, levels = orderedPIDs1.1)) %>% 
   confusion_matrix_individual_plot(colour.intuitive, ylabels = c(orderedCues,'other')) +
@@ -309,17 +309,17 @@ comm.e1 %>%
 
 ###. figure 1c ####
 comm.e1 %>%
-  filter(response != 'open' & sessionNo == 'Session 2') %>% 
+  filter(response != 'open' & SessionNo == 'Session 2') %>% 
   confusion_matrix_data() %>%
   confusion_matrix_plot(colour.swapped, ylabels = c(orderedCues,'other')) + 
   labs(title = 'E1: Swapped roles') -> confmat.e1.role2
 
 ###. figure S1b ####
 orderedPIDs1.2 <- comm.e1 %>% 
-  filter(response != 'open' & sessionNo == 'Session 2') %>% 
+  filter(response != 'open' & SessionNo == 'Session 2') %>% 
   order_PIDs(exptPID)
 comm.e1 %>%
-  filter(response != 'open' & sessionNo == 'Session 2') %>% 
+  filter(response != 'open' & SessionNo == 'Session 2') %>% 
   confusion_matrix_data(exptPID)  %>%
   mutate(exptPID = factor(exptPID, levels = orderedPIDs1.2)) %>% 
   confusion_matrix_individual_plot(colour.swapped, ylabels = c(orderedCues,'other')) +
@@ -375,29 +375,34 @@ AAB
 CDD
 EFF
 '
+quartz(width = 9.6, height = 8.7); plot(1:10)
 wrap_plots(A = plot_spacer(), B = confmat.e1.role1, 
            C = confmat.e1.role2, E = confmat.e2, 
            D = (f1.e1 + theme_insidelegend(0.8,1.2)), F = f1.e2, 
            design = layout.fig1) + #plot_layout(guides = 'collect') 
   plot_annotation(tag_levels = 'A')
 ggsave('figures/Figure 1 intuitive comm performance.svg')
+# combined with line drawing (panel A) in Adobe Illustrator
 
 ###. figure 4 ####
 layout.fig4 <- '
 ABB
 CDD
 '
+quartz(width = 8.7, height = 6.3); plot(1:10)
 wrap_plots(A = confmat.e3, B = f1.e3, C = confmat.e4, E = f1.e4,
            design = layout.fig4) +
   plot_annotation(tag_levels = 'A')
 ggsave('figures/Figure 4 expert comm performance.svg')
+ggsave('figures/Figure 4 expert comm performance.pdf')
 
 ###. figure 5 ####
 
+quartz(width = 5.6, height = 7.0); plot(1:10)
 compare.plot / time.expert +
   plot_annotation(tag_levels = 'A')
 ggsave('figures/Figure 5 intuitive vs standardized.svg')
-
+# combined with SH's tracking figure (panel A) in Adobe Illustrator
 
 #### supplementary figures ####
 
@@ -416,6 +421,7 @@ confmat.e1.role1.ind + labs(title = 'A. Experiment 1 initial roles') +
   plot_layout(design = design.intuitive, guides = 'collect') 
 
 ggsave('figures/FigS1_intuitive_individual-conf-mat.svg')
+ggsave('figures/FigS1_intuitive_individual-conf-mat.pdf')
 
 ###. figure S3 ####
 
@@ -427,4 +433,5 @@ confmat.e3.ind + labs(title = 'A. Experiment 3') +
   guides(fill = guide_legend(label.position = "bottom"))
 
 ggsave('figures/FigS3_expert_individual-conf-mat.svg')
+ggsave('figures/FigS3_expert_individual-conf-mat.pdf')
 

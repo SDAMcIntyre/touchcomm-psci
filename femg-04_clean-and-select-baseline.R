@@ -43,6 +43,7 @@ if (!dir.exists(output.folder)) dir.create(output.folder)
 
 
 # trim to just baseline and stimulus
+# chosen based on time plot
 baseline.duration.sec <- 0.2
 baseline.offset.sec <- 1.0
 

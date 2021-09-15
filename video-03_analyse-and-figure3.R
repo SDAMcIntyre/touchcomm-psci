@@ -4,7 +4,7 @@ library(dplyr)
 library(tidyr)
 library(patchwork)
 library(svglite)
-source('analyse-comm_source.R')
+source('comm_source.R')
 
 #### functions ####
 
@@ -23,7 +23,7 @@ videoData <- read_csv('data/processed/expt1_video-02_processed.csv')
 theme_set(theme_classic())
 
 videoCueDuration <- videoData %>%
-  group_by(pair, sessionNo, cued, trial, Performance) %>%
+  group_by(pair, SessionNo, cued, trial, Performance) %>%
   summarise(totDuration = sum(Duration.sec))
 videoCueDuration$Cued <- factor(toupper(videoCueDuration$cued), levels = toupper(orderedCues))
 
@@ -96,6 +96,6 @@ videoBestWorst %>%
   labs(size = 'Difference in\n% of time', shape = 'Touched on', colour = 'Intensity', y = NULL, x = NULL) -> bestworst.plot
 
 
-quartz(); plot(1:10)
+quartz(width = 8.7, height = 4.4); plot(1:10)
 density.plot / bestworst.plot + plot_layout(ncol = 1, heights = c(0.1,1))
 ggsave('../Figures/video gestures.svg')

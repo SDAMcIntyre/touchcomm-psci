@@ -6,7 +6,7 @@ library(afex)
 library(emmeans)
 library(patchwork)
 library(svglite)
-source('analyse-comm_source.R')
+source('comm_source.R')
 
 #### functions ####
 z_mean_diff <- function(.data) {
@@ -90,8 +90,6 @@ femg.cor.t.samples <- read_csv(
 femg.cor.r.samples <- read_csv(
   paste0(file.prefix, 'rcor', file.suffix), 
   col_types = cols(trial = col_integer()) )
-
-# orderedCues <- c('attention', 'love', 'happiness', 'calming', 'sadness', 'gratitude')
 
 #### mean z and mean z difference (stim - baseline) ####
 

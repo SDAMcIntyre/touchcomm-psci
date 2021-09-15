@@ -1,4 +1,6 @@
-library(tidyverse)
+library(stringr)
+library(readr)
+library(dplyr)
 library(RcppRoll)
 library(plotly)
 
@@ -387,5 +389,18 @@ for (f in 1:length(femg.raw.files)) {
 
 }
 
-save(report, file = 'preprocess-femg-01_video_align_report.RData')
+#### report ####
 
+# inspect plots:
+report$T03_R85$plot.before
+report$T03_R85$plot.after
+
+video.synced <- c()
+for (session in 1:length(report)) {
+  video.synced <- c(video.synced, report[[session]]$synced)
+}
+print(paste(
+  sum(video.synced), 'of', length(video.synced), 'synced to video'
+  ))
+
+save(report, file = 'femg-01_video_align_report.RData')

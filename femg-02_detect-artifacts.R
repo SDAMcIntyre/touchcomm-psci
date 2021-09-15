@@ -57,6 +57,7 @@ femg.z <- femg.files %>%
   do(detect_artifacts(., prefixes, win.sec = 0.05, flag.threshold = 3))
 
 ##### trial durations #####
+# to check where to trim excess data 
 
 trial.durations <- femg.z %>% 
   group_by(session,cued,trialNo) %>% 

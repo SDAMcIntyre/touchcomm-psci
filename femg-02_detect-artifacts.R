@@ -41,9 +41,9 @@ detect_artifacts <- function(df, prefixes, win.sec, flag.threshold) {
 
 #### main ####
 
-output.file.name <- 'data/processed/expt1_femg-02_artifacts-labelled'
+output.file.name <- 'data/processed/femg-02_artifacts-labelled'
 
-femg.files <- list.files('data/processed/expt1_femg-01_aligned', full.names = TRUE) 
+femg.files <- list.files('data/processed/femg-01_aligned', full.names = TRUE) 
 
 prefixes <- c('t.zyg', 't.cor', 'r.zyg', 'r.cor')
 

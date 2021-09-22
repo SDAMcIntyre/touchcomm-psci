@@ -57,7 +57,7 @@ read_all_comm_data <- function(fpath,fnames,infoDataFiles){
 
 
 #### reconstruct missing files ####
-behDataDir <- 'data/private/expt4_comm_raw/'
+behDataDir <- 'data/private/comm_expt4-raw/'
 missingCommData <- c('touch-comm-Behav_2018-04-06_11-24-35_P009',
                      'touch-comm-Behav_2018-04-06_15-00-56_P010')
 reconstruct_comm_file(behDataDir, missingCommData)
@@ -67,4 +67,4 @@ commDataFiles <- dir(path = behDataDir, pattern = 'communication-data')
 infoDataFiles <- dir(path = behDataDir, pattern = 'info')
 
 commData <- read_all_comm_data(behDataDir,commDataFiles,infoDataFiles)
-write_csv(commData, 'data/processed/expt4_comm-01_combined.csv')
+write_csv(commData, 'data/primary/comm_expt4-collated.csv')

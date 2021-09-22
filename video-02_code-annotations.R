@@ -120,9 +120,9 @@ get_coded_vars <- function(rawVideoData) {
 }
 
 #### read in data ####
-video.data <- read_csv('data/processed/expt1_video-01_combined.csv')
+video.data <- read_csv('data/primary/video_expt1-collated.csv')
 
 #### apply coding scheme to annotations #### 
 video.data.coded <- get_coded_vars(video.data) 
 
-write_csv(video.data.coded, 'data/processed/expt1_video-02_processed.csv')
+write_csv(video.data.coded, 'data/processed/video_coded-annotations.csv')

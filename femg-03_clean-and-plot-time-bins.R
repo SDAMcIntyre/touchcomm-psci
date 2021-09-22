@@ -45,8 +45,8 @@ time_plot <- function(df, muscle) {
 #### main ####
 
 ## use .RData file in case of memory problems
-load(file = 'data/processed/expt1_femg-02_artifacts-labelled.RData')
-# femg.data <- read_csv('data/processed/expt1_femg-02_artifacts-labelled.csv',
+load(file = 'data/processedfemg-02_artifacts-labelled.RData')
+# femg.data <- read_csv('data/processed/femg-02_artifacts-labelled.csv',
 #                       col_types = 'ddiicddddccccccicddlddddlddddlddddldd')
 prefixes <- c('t.zyg', 't.cor', 'r.zyg', 'r.cor')
 
@@ -69,7 +69,7 @@ femg.binned <- femg.data %>%
   do(clean_bins(., prefixes)) 
 
 femg.binned %>% 
-  write_csv('data/processed/expt1_femg-03_binned-100ms-clean.csv')
+  write_csv('data/processed/femg-03_binned-100ms-clean.csv')
 
 # where to cut off the time plot
 cutoffs <- femg.binned %>% 

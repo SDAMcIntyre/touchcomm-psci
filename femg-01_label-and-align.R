@@ -5,15 +5,16 @@ library(RcppRoll)
 library(plotly)
 
 # output folder
-output.folder <- 'data/processed/expt1_femg-01_aligned'
+output.folder <- 'data/processed/femg-01_aligned/'
 if (!dir.exists(output.folder)) dir.create(output.folder)
 
 #femg raw
-femg.raw.files <- list.files('data/raw/expt1_femg_raw-txt', pattern = '[0-9]+', full.names = TRUE) 
-channels <- read.csv('data/raw/expt1_femg_raw-txt/channel-labels.csv')
-roles <- read.csv('data/raw/expt1_femg_raw-txt/role-labels.csv')
-video.files <- list.files('data/processed/expt1_femg_video-timing-sync', full.names = TRUE)
-commForfemg <- read_csv('data/processed/expt1_comm-01_combined.csv', col_types = 'cccicccici') %>%
+femg.folder <- 'data/primary/femg_expt1-exported-txt'
+femg.raw.files <- list.files(femg.folder, pattern = '[0-9]+', full.names = TRUE) 
+channels <- read.csv(paste0(femg.folder,'/channel-labels.csv'))
+roles <- read.csv(paste0(femg.folder,'/role-labels.csv'))
+video.files <- list.files('data/primary/femg_expt1-video-timing-sync-txt', full.names = TRUE)
+commForfemg <- read_csv('data/primary/comm_expt1-collated.csv', col_types = 'cccicccici') %>%
   mutate(
     session = paste(
     str_replace(toucher,'P','T'),
@@ -385,7 +386,7 @@ for (f in 1:length(femg.raw.files)) {
     filter(stimTime.sec > -60) %>% 
     # cut out anything longer than 1 minute after the last trial
     filter(stimTime.sec <= expt.end + 60) %>% 
-    write_csv(paste0(output.folder,'/',sessionID,'_femg_aligned.csv'))
+    write_csv(paste0(output.folder,sessionID,'_femg_aligned.csv'))
 
 }
 

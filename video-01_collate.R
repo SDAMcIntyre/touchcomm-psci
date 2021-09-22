@@ -64,7 +64,7 @@ read_all_video_files <- function(fpath, fnames) {
 
 #### read all video data ####
 
-video.files.path <- 'data/raw/expt1_video-annotations_raw-txt/'
+video.files.path <- 'data/primary/video_expt1-annotations-exported-txt/'
 video.files <- dir(path = video.files.path, pattern = 'txt')
 
 video.data.all <- read_all_video_files(video.files.path, video.files)
@@ -72,11 +72,11 @@ video.data.all <- read_all_video_files(video.files.path, video.files)
 
 #### combine with comm data ####
 
-comm.data.all <- read_csv('data/processed/expt1_comm-01_combined.csv')
+comm.data.all <- read_csv('data/primary/comm_expt1-collated.csv')
 
 video.data.combined <- left_join(video.data.all, comm.data.all) %>% 
   select(trial, toucher, receiver, everything())
 
 write.csv(video.data.combined, 
-          'data/processed/expt1_video-01_combined.csv', 
+          'data/primary/video-expt1_collated.csv', 
           row.names = FALSE)

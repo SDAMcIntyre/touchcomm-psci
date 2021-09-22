@@ -38,7 +38,7 @@ summarise_flagged_trials <- function(df, prefixes) {
 
 #### main ####
 
-output.folder <- 'data/processed/expt1_femg-04_cleaned-time-selected'
+output.folder <- 'data/processed/femg-04_cleaned-time-selected'
 if (!dir.exists(output.folder)) dir.create(output.folder)
 
 
@@ -47,7 +47,7 @@ if (!dir.exists(output.folder)) dir.create(output.folder)
 baseline.duration.sec <- 0.2
 baseline.offset.sec <- 1.0
 
-femg.binned <- read_csv('data/processed/expt1_femg-03_binned-100ms-clean.csv') %>% 
+femg.binned <- read_csv('data/processed/femg-03_binned-100ms-clean.csv') %>% 
     mutate(phase = replace(phase, # values to replace
                            time >= -(baseline.duration.sec + baseline.offset.sec) &
                              time < -baseline.offset.sec, # conditions

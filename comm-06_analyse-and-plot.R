@@ -11,36 +11,36 @@ library(parallel)
 source('comm_source.R')
 
 #### read full data ####
-comm.e1 <- read_csv('data/processed/expt1_comm-01_combined.csv') %>%
+comm.e1 <- read_csv('data/primary/comm_expt1-collated.csv') %>%
   mutate(exptPID = paste('E1', pair, sep = '.'),
          roles = if_else(SessionNo == 'Session 1', 'Initial roles', 'Swapped roles'))
 
-comm.e2 <- read_csv('data/processed/expt2_comm-01_combined.csv') %>%
+comm.e2 <- read_csv('data/primary/comm_expt2-collated.csv') %>%
   mutate(exptPID = paste('E2',pair, sep = '.'))
 
-comm.e3 <- read_csv('data/processed/expt3_comm-01_combined.csv') %>%
+comm.e3 <- read_csv('data/primary/comm_expt3-collated.csv') %>%
   mutate(toucher = 1,
          exptPID = paste('E3',PID, sep = '.'))
 
-comm.e4 <- read_csv('data/processed/expt4_comm-01_combined.csv') %>%
+comm.e4 <- read_csv('data/primary/comm_expt3-collated.csv') %>%
   mutate(exptPID = paste('E4',PID, sep = '.'))
 
 
 #### read performance metrics ####
 
-performance.e1 <- read_csv('data/processed/expt1_comm-02_performance.csv') %>% 
+performance.e1 <- read_csv('data/processed/comm_expt1-performance.csv') %>% 
   mutate(cued = factor(cued, levels = orderedCues))
 
-performance.e2 <- read_csv('data/processed/expt2_comm-02_performance.csv') %>% 
+performance.e2 <- read_csv('data/processed/comm_expt2-performance.csv') %>% 
   mutate(cued = factor(cued, levels = orderedCues))
 
-performance.e3 <- read_csv('data/processed/expt3_comm-02_performance.csv') %>% 
+performance.e3 <- read_csv('data/processed/comm_expt3-performance.csv') %>% 
   mutate(cued = factor(cued, levels = orderedCues))
 
-performance.e4 <- read_csv('data/processed/expt4_comm-02_performance.csv') %>% 
+performance.e4 <- read_csv('data/processed/comm_expt4-performance.csv') %>% 
   mutate(cued = factor(cued, levels = orderedCues))
 
-performance.over.time <- read_csv('data/processed/expts3-4_comm-02_performance-over-time.csv') %>% 
+performance.over.time <- read_csv('data/processed/comm_expts3-4-performance-over-time.csv') %>% 
   mutate(cued = factor(cued, levels = orderedCues))
 
 #### mixed effects models ####

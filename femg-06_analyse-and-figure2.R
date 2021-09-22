@@ -75,7 +75,7 @@ read_ml_lines <- function(blockN, ...) {
 
 #### read in cleaned & binned fEMG data #### 
 
-file.prefix <- 'data/processed/expt1_femg-04_cleaned-time-selected/fEMG_clean_'
+file.prefix <- 'data/processed/femg-04_cleaned-time-selected/fEMG_clean_'
 file.suffix <- '_0to4sec_100ms-binned.csv'
 
 femg.zyg.t.samples <- read_csv(
@@ -110,7 +110,7 @@ femg.cor.r <- femg.cor.r.samples %>%
   mutate(cued = factor(cued, levels = orderedCues)) #%>% 
 
 #### read communication data ####
-comm.femg <- read_csv('data/processed/expt1_comm-01_combined.csv', col_types = 'cccicccici') %>% 
+comm.femg <- read_csv('data/primary/comm_expt1-collated.csv', col_types = 'cccicccici') %>% 
   mutate(
     session = paste(
       str_replace(toucher,'P','T'),
@@ -119,7 +119,7 @@ comm.femg <- read_csv('data/processed/expt1_comm-01_combined.csv', col_types = '
   select(c('session', 'trial','cued', 'response', 'correct'))
 
 #### read in ml confusion matrix data ####
-ml.predictions.file <- 'data/processed/expt1_femg-04_ML-predictions-output.txt'
+ml.predictions.file <- 'data/processed/femg-04_ML-predictions-output.txt'
 
 ml.t.confusion <- read_ml_matrix(ml.predictions.file, 1)
 ml.r.confusion <- read_ml_matrix(ml.predictions.file, 9)

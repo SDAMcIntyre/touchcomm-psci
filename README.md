@@ -1,6 +1,6 @@
 # touchcomm-psci
 
-data repository: https://figshare.com/account/home#/collections/5630842 
+data repository: https://doi.org/10.6084/m9.figshare.c.5630842.v2
 
 Analysis scripts for article:
 

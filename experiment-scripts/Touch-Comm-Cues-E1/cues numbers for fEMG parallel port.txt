@@ -1,0 +1,6 @@
+gratitude	1
+love	2
+sadness	3
+happiness	4
+attention	5
+calming	6

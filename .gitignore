@@ -45,3 +45,5 @@ rsconnect/
 
 # figures
 /figures/
+*.pyc
+*.dll

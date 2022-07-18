@@ -1,0 +1,51 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "McIntyre"
+  given-names: "Sarah"
+  orcid: "https://orcid.org/0000-0002-0544-6533"
+title: "Analysis and materials for touch communication study"
+version: 1.0
+doi: 10.5281/zenodo.1234
+date-released: 2022-07-18
+url: "https://github.com/SDAMcIntyre/touchcomm-psci"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "McIntyre"
+    given-names: "S"
+  - family-names: "Hauser"
+    given-names: "S C"
+  - family-names: "Kusztor"
+    given-names: "A"  
+  - family-names: "Boehme"
+    given-names: "R"
+  - family-names: "Moungou"
+    given-names: "A"
+  - family-names: "Isager"
+    given-names: "P M"
+  - family-names: "Homman"
+    given-names: "L"
+  - family-names: "Novembre"
+    given-names: "G"
+  - family-names: "Nagi"
+    given-names: "S S"
+  - family-names: "Israr"
+    given-names: "A"
+  - family-names: "Lumpkin"
+    given-names: "E A"
+  - family-names: "Abnousi"
+    given-names: "F"
+  - family-names: "Gerling"
+    given-names: "G J"
+  - family-names: "Olausson"
+    given-names: "H"
+    doi: "10.31234/osf.io/smktq"
+  journal: "PsyArXiv"
+  #month: 9
+  #start: 1 # First page number
+  #end: 10 # Last page number
+  title: "The language of social touch is intuitive and quantifiable"
+  #issue: 1
+  #volume: 1
+  year: 2021

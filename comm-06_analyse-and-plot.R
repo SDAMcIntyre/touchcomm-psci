@@ -435,3 +435,54 @@ confmat.e3.ind + labs(title = 'A. Experiment 3') +
 ggsave('figures/FigS3_expert_individual-conf-mat.svg')
 ggsave('figures/FigS3_expert_individual-conf-mat.pdf')
 
+# individual performance ####
+
+###. expt 1 ####
+ind.1 <- comm.e1 %>% 
+  filter(response != 'open' & roles == "Initial roles") %>% 
+  group_by(exptPID, roles) %>% 
+  summarise(accuracy = mean(correct)) %>% 
+  select(exptPID, roles, accuracy) %>% 
+  arrange(-accuracy)
+
+ind.1 <- rbind(ind.1,
+               comm.e1 %>% 
+                 filter(response != 'open' & roles == "Swapped roles") %>% 
+                 group_by(exptPID, roles) %>% 
+                 summarise(accuracy = mean(correct)) %>% 
+                 select(exptPID, roles, accuracy) %>% 
+                 arrange(-accuracy)
+)
+
+write_csv(ind.1, "data/processed/expt1_individual_accuracy.csv")
+
+###. expt 2 ####
+
+ind.2 <- comm.e2 %>% 
+  group_by(exptPID) %>% 
+  summarise(accuracy = mean(correct)) %>% 
+  select(exptPID, accuracy) %>% 
+  arrange(-accuracy)
+
+write_csv(ind.2, "data/processed/expt2_individual_accuracy.csv")
+
+###. expt 3 ####
+
+ind.3 <- comm.e3 %>% 
+  group_by(exptPID) %>% 
+  summarise(accuracy = mean(correct)) %>% 
+  select(exptPID, accuracy) %>% 
+  arrange(-accuracy)
+
+write_csv(ind.3, "data/processed/expt3_individual_accuracy.csv")
+
+###. expt 4 ####
+
+ind.4 <- comm.e4 %>% 
+  group_by(exptPID) %>% 
+  summarise(accuracy = mean(correct)) %>% 
+  select(exptPID, accuracy) %>% 
+  arrange(-accuracy)
+
+write_csv(ind.4, "data/processed/expt4_individual_accuracy.csv")
+
